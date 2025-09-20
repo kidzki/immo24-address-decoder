@@ -2,7 +2,7 @@
 
 # Immo24 Address Decoder
 
-[![Build](https://img.shields.io/github/actions/workflow/status/kidzki/immo24-address-decoder/build.yml?branch=main)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/kidzki/immo24-address-decoder/build.yml?branch=main)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build-release.yml)
 [![Release](https://img.shields.io/github/v/release/kidzki/immo24-address-decoder?display_name=tag&sort=semver)](https://github.com/kidzki/immo24-address-decoder/releases)
 [![Uses Bun](https://img.shields.io/badge/Uses-Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/IMMO24_EXTENSION_ID)
