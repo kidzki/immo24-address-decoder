@@ -1,18 +1,23 @@
-name: Build & Release Extensions
+name: Build Extensions
 
 on:
-  workflow_dispatch:
   push:
-    tags:
-      - 'v*'
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build-release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Use Node.js 20
         uses: actions/setup-node@v4
@@ -20,13 +25,13 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
-      - name: Build (minify + copy)
+      - name: Build (minify + copy + zip)
         run: npm run build:all
 
-      - name: Upload build artifacts
+      - name: Upload artifacts (CI)
         uses: actions/upload-artifact@v4
         with:
           name: dist-zips
@@ -34,34 +39,36 @@ jobs:
             dist/immo24-chromium.zip
             dist/immo24-firefox.zip
 
-      - name: Create GitHub Release
+      # ---- Put packages into repo under packages/<version>/ when building a tag ----
+      - name: Determine version from tag or manifest
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          else
+            MANIFEST_VERSION=$(node -e "console.log(require('./package.json').version || '0.0.0')")
+            echo "version=${MANIFEST_VERSION}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit packages into repo (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          ver="${{ steps.ver.outputs.version }}"
+          mkdir -p "packages/${ver}"
+          cp dist/immo24-chromium.zip "packages/${ver}/immo24-chromium-${ver}.zip"
+          cp dist/immo24-firefox.zip  "packages/${ver}/immo24-firefox-${ver}.zip"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "packages/${ver}"
+          git commit -m "chore(release): add packages for v${ver}" || echo "No changes to commit"
+          git push
+
+      - name: Create GitHub Release (attach zips)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/immo24-chromium.zip
             dist/immo24-firefox.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # ---- PUBLISH TO CHROME WEB STORE (optional) ----
-      - name: Publish to Chrome Web Store
-        if: ${{ secrets.CHROME_EXTENSION_ID && secrets.CHROME_CLIENT_ID && secrets.CHROME_CLIENT_SECRET && secrets.CHROME_REFRESH_TOKEN }}
-        env:
-          CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
-          CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
-          CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
-          CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
-        run: |
-          npm run publish:chrome
-
-      # ---- SIGN & SUBMIT TO FIREFOX AMO (optional) ----
-      - name: Sign & submit to AMO
-        if: ${{ secrets.FIREFOX_JWT_ISSUER && secrets.FIREFOX_JWT_SECRET && secrets.FIREFOX_EXTENSION_ID }}
-        env:
-          FIREFOX_JWT_ISSUER: ${{ secrets.FIREFOX_JWT_ISSUER }}
-          FIREFOX_JWT_SECRET: ${{ secrets.FIREFOX_JWT_SECRET }}
-          FIREFOX_EXTENSION_ID: ${{ secrets.FIREFOX_EXTENSION_ID }}
-        run: |
-          npm run publish:firefox
-
+          generate_release_notes: true

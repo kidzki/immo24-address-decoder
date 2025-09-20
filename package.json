@@ -1,22 +1,18 @@
 {
   "name": "immo24-address-decoder",
-  "version": "1.4.0",
+  "version": "0.1.0",
   "private": false,
   "type": "module",
   "scripts": {
     "clean": "rimraf dist web-ext-artifacts",
     "build": "node scripts/build.mjs",
-    "build:chromium:zip": "cd dist/chromium && zip -r ../immo24-chromium.zip .",
-    "build:firefox:zip": "cd dist/firefox && zip -r ../immo24-firefox.zip .",
-    "build:all": "npm run clean && npm run build && npm run build:chromium:zip && npm run build:firefox:zip",
-    "publish:chrome": "chrome-webstore-upload upload --extension-id $CHROME_EXTENSION_ID --source dist/immo24-chromium.zip --client-id $CHROME_CLIENT_ID --client-secret $CHROME_CLIENT_SECRET --refresh-token $CHROME_REFRESH_TOKEN && chrome-webstore-upload publish --extension-id $CHROME_EXTENSION_ID --client-id $CHROME_CLIENT_ID --client-secret $CHROME_CLIENT_SECRET --refresh-token $CHROME_REFRESH_TOKEN",
-    "publish:firefox": "web-ext sign --source-dir=dist/firefox --artifacts-dir=web-ext-artifacts --channel=listed --api-key=$FIREFOX_JWT_ISSUER --api-secret=$FIREFOX_JWT_SECRET --id=$FIREFOX_EXTENSION_ID"
+    "zip:chromium": "cd dist/chromium && zip -r ../immo24-chromium.zip .",
+    "zip:firefox": "cd dist/firefox && zip -r ../immo24-firefox.zip .",
+    "build:all": "npm run clean && npm run build && npm run zip:chromium && npm run zip:firefox"
   },
   "devDependencies": {
     "cpy": "^11.1.0",
     "esbuild": "^0.23.0",
-    "rimraf": "^6.0.1",
-    "web-ext": "^8.3.0",
-    "chrome-webstore-upload-cli": "^2.2.0"
+    "rimraf": "^6.0.1"
   }
 }

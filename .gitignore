@@ -1,0 +1,10 @@
+# build outputs
+dist/
+web-ext-artifacts/
+
+# node
+node_modules/
+npm-debug.log*
+
+# allow packages in repo
+!packages/
