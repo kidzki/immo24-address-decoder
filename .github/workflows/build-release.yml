@@ -6,6 +6,7 @@ on:
     tags: [ 'v*' ]
   workflow_dispatch:
 
+# Nur fürs Release-Erstellen/Upload nötig
 permissions:
   contents: write
 
@@ -22,7 +23,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
         with:
-          bun-version: '1.1.30'   # stabile Version pinnen
+          bun-version: '1.1.30'
 
       - name: Install deps (bun)
         run: bun install --frozen-lockfile
@@ -33,6 +34,7 @@ jobs:
       - name: Build (minify + copy + zip)
         run: bun run build:all
 
+      # Artefakte immer im CI sichtbar machen (bei main & tags)
       - name: Upload CI artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -41,43 +43,7 @@ jobs:
             dist/immo24-chromium.zip
             dist/immo24-firefox.zip
 
-      - name: Determine version from tag or package.json
-        id: ver
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            TAG="${GITHUB_REF#refs/tags/}"
-            echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
-          else
-            VER=$(jq -r .version package.json)
-            echo "version=${VER}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Publish packages into repo (on tag)
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          VERSION: ${{ steps.ver.outputs.version }}
-          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-        run: |
-          # Artefakte temporär sichern
-          mkdir -p /tmp/pkg
-          cp dist/immo24-chromium.zip "/tmp/pkg/immo24-chromium-${VERSION}.zip"
-          cp dist/immo24-firefox.zip  "/tmp/pkg/immo24-firefox-${VERSION}.zip"
-
-          # Auf Default-Branch wechseln
-          git fetch origin "${DEFAULT_BRANCH}"
-          git checkout "${DEFAULT_BRANCH}"
-
-          # Pakete ins Repo legen
-          mkdir -p "packages/${VERSION}"
-          cp /tmp/pkg/*.zip "packages/${VERSION}/"
-
-          # commit & push
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "packages/${VERSION}"
-          git commit -m "chore(release): add packages for v${VERSION}" || echo "No changes to commit"
-          git push origin "${DEFAULT_BRANCH}"
-
+      # Nur bei Tags: GitHub Release mit Assets erstellen
       - name: Create GitHub Release (attach zips)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
@@ -86,17 +52,3 @@ jobs:
             dist/immo24-chromium.zip
             dist/immo24-firefox.zip
           generate_release_notes: true
-
-      - name: Update manifest version badge (main only)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          VER=$(jq -r .version manifest.json)
-          mkdir -p badges
-          cat > badges/manifest.json <<EOF
-          { "schemaVersion": 1, "label": "manifest", "message": "${VER}", "color": "blue" }
-          EOF
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add badges/manifest.json
-          git commit -m "chore(badge): update manifest version to ${VER}" || echo "no changes"
-          git push origin "${{ github.ref_name }}"
