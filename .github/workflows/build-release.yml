@@ -20,12 +20,15 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
+        uses: oven-sh/setup-bun@v1
         with:
-          bun-version: 'latest'   # oder 'latest'
+          bun-version: '1.1.30'   # stabile Version pinnen
 
       - name: Install deps (bun)
         run: bun install --frozen-lockfile
+
+      - name: Ensure zip is available
+        run: sudo apt-get update && sudo apt-get install -y zip
 
       - name: Build (minify + copy + zip)
         run: bun run build:all
@@ -49,18 +52,31 @@ jobs:
             echo "version=${VER}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit packages into repo (on tag)
+      - name: Publish packages into repo (on tag)
         if: startsWith(github.ref, 'refs/tags/')
+        env:
+          VERSION: ${{ steps.ver.outputs.version }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
-          ver="${{ steps.ver.outputs.version }}"
-          mkdir -p "packages/${ver}"
-          cp dist/immo24-chromium.zip "packages/${ver}/immo24-chromium-${ver}.zip"
-          cp dist/immo24-firefox.zip  "packages/${ver}/immo24-firefox-${ver}.zip"
+          # Artefakte temporär sichern
+          mkdir -p /tmp/pkg
+          cp dist/immo24-chromium.zip "/tmp/pkg/immo24-chromium-${VERSION}.zip"
+          cp dist/immo24-firefox.zip  "/tmp/pkg/immo24-firefox-${VERSION}.zip"
+
+          # Auf Default-Branch wechseln
+          git fetch origin "${DEFAULT_BRANCH}"
+          git checkout "${DEFAULT_BRANCH}"
+
+          # Pakete ins Repo legen
+          mkdir -p "packages/${VERSION}"
+          cp /tmp/pkg/*.zip "packages/${VERSION}/"
+
+          # commit & push
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "packages/${ver}"
-          git commit -m "chore(release): add packages for v${ver}" || echo "No changes to commit"
-          git push
+          git add "packages/${VERSION}"
+          git commit -m "chore(release): add packages for v${VERSION}" || echo "No changes to commit"
+          git push origin "${DEFAULT_BRANCH}"
 
       - name: Create GitHub Release (attach zips)
         if: startsWith(github.ref, 'refs/tags/')
