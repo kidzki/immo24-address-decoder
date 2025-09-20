@@ -87,7 +87,7 @@ jobs:
             dist/immo24-firefox.zip
           generate_release_notes: true
 
-                - name: Update manifest version badge (main only)
+      - name: Update manifest version badge (main only)
         if: github.ref == 'refs/heads/main'
         run: |
           VER=$(jq -r .version manifest.json)
