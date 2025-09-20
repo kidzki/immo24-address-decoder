@@ -1,9 +1,9 @@
-(function(){
-  const API = (typeof browser !== 'undefined') ? browser : chrome;
+(function () {
+  const API = typeof browser !== "undefined" ? browser : chrome;
   const t = (k) => (API?.i18n?.getMessage ? API.i18n.getMessage(k) : k);
 
   // i18n in DOM anwenden (Texte mit data-i18n ersetzen)
-  document.querySelectorAll("[data-i18n]").forEach(el => {
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     const msg = t(key);
     if (!msg) return;
@@ -21,7 +21,7 @@
     autoCopy: false,
     position: "bottom-right",
     theme: "dark",
-    localeOverride: "auto"   // "auto" | "de" | "en" | "es" | "it"
+    localeOverride: "auto", // "auto" | "de" | "en" | "es" | "it"
   };
 
   const form = document.getElementById("form");
@@ -29,12 +29,13 @@
 
   function load() {
     try {
-      API.storage.sync.get(DEFAULTS, items => {
+      API.storage.sync.get(DEFAULTS, (items) => {
         form.mapProvider.value = items.mapProvider;
         form.autoCopy.checked = !!items.autoCopy;
         form.position.value = items.position;
         form.theme.value = items.theme;
-        if (form.localeOverride) form.localeOverride.value = items.localeOverride || "auto";
+        if (form.localeOverride)
+          form.localeOverride.value = items.localeOverride || "auto";
       });
     } catch {
       // Fallback auf Defaults
@@ -42,29 +43,38 @@
       form.autoCopy.checked = DEFAULTS.autoCopy;
       form.position.value = DEFAULTS.position;
       form.theme.value = DEFAULTS.theme;
-      if (form.localeOverride) form.localeOverride.value = DEFAULTS.localeOverride;
+      if (form.localeOverride)
+        form.localeOverride.value = DEFAULTS.localeOverride;
     }
   }
 
-  form.addEventListener("submit", e => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
     const data = {
       mapProvider: form.mapProvider.value,
       autoCopy: form.autoCopy.checked,
       position: form.position.value,
       theme: form.theme.value,
-      localeOverride: form.localeOverride ? form.localeOverride.value : "auto"
+      localeOverride: form.localeOverride ? form.localeOverride.value : "auto",
     };
     try {
       API.storage.sync.set(data, () => {
         status.textContent = t("optSaved") || "Saved ✓";
-        setTimeout(() => status.textContent = "", 1500);
+        setTimeout(() => (status.textContent = ""), 1500);
       });
     } catch {
       status.textContent = t("optSaved") || "Saved ✓";
-      setTimeout(() => status.textContent = "", 1500);
+      setTimeout(() => (status.textContent = ""), 1500);
     }
   });
 
   load();
+  
+  // Versionsnummer anzeigen
+  try {
+    const manifest = API.runtime.getManifest();
+    document.getElementById("version").textContent = manifest.version || "dev";
+  } catch {
+    document.getElementById("version").textContent = "dev";
+  }
 })();

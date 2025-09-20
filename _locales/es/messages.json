@@ -35,5 +35,7 @@
 
   "loveMade": { "message": "Hecho con" },
   "loveIn":   { "message": "en Alemania" },
-  "loveRepo": { "message": "Repositorio en GitHub" }
+  "loveRepo": { "message": "Repositorio en GitHub" },
+
+  "optVersion": { "message": "Versión:" }
 }
