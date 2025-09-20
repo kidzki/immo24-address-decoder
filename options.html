@@ -1,79 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <title data-i18n="optTitle">IS24 Address Decoder – Optionen</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      /* deine Styles unverändert */
-    </style>
-  </head>
-  <body>
-    <h1 data-i18n="optTitle">IS24 Address Decoder – Optionen</h1>
+<head>
+  <meta charset="utf-8">
+  <title data-i18n="optTitle">IS24 Address Decoder – Optionen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { color-scheme: light dark; }
+    body { font: 14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, sans-serif; margin: 24px; }
+    h1 { font-size: 18px; margin: 0 0 16px; }
+    fieldset { border: 1px solid #ccc; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+    label { display: block; margin: 8px 0; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    select, input[type="checkbox"] { font: inherit; }
+    button { appearance: none; border-radius: 10px; border: 0; padding: 10px 14px; font-weight: 700; cursor: pointer; background: #2563eb; color: #fff; }
+    .muted { opacity: .8; font-size: 12px; }
 
-    <form id="form">
-      <fieldset>
-        <legend data-i18n="optLegendMap">Karte</legend>
-        <label>
-          <span data-i18n="optMapProvider">Kartenanbieter:</span>
-          <select name="mapProvider">
-            <option value="google" data-i18n="optGoogle">Google Maps</option>
-            <option value="osm" data-i18n="optOsm">OpenStreetMap</option>
-            <option value="apple" data-i18n="optApple">Apple Maps</option>
-          </select>
-        </label>
-      </fieldset>
+    /* Footer */
+    footer.love_section {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,.15);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      opacity: .9;
+    }
+    footer.love_section .heart {
+      font-size: 16px;
+      line-height: 1;
+      margin: 0 4px;
+    }
+    footer.love_section a {
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid rgba(0,0,0,.2);
+      border-radius: 10px;
+      padding: 6px 10px;
+    }
+    @media (prefers-color-scheme: dark) {
+      fieldset { border-color: #444; }
+      footer.love_section { border-top-color: rgba(255,255,255,.15); }
+      footer.love_section a { border-color: rgba(255,255,255,.25); }
+    }
+  </style>
+</head>
+<body>
+  <h1 data-i18n="optTitle">IS24 Address Decoder – Optionen</h1>
 
-      <fieldset>
-        <legend data-i18n="optLegendOverlay">Overlay</legend>
-        <label>
-          <span data-i18n="optPosition">Position:</span>
-          <select name="position">
-            <option value="bottom-right" data-i18n="posBR">Unten rechts</option>
-            <option value="bottom-left" data-i18n="posBL">Unten links</option>
-            <option value="top-right" data-i18n="posTR">Oben rechts</option>
-            <option value="top-left" data-i18n="posTL">Oben links</option>
-          </select>
-        </label>
-        <label>
-          <span data-i18n="optTheme">Theme:</span>
-          <select name="theme">
-            <option value="dark" data-i18n="themeDark">Dunkel</option>
-            <option value="light" data-i18n="themeLight">Hell</option>
-          </select>
-        </label>
-        <label class="row">
-          <input type="checkbox" name="autoCopy" />
-          <span data-i18n="optAutoCopy"
-            >Adresse nach Erkennung automatisch …</span
-          >
-        </label>
-      </fieldset>
+  <form id="form">
+    <fieldset>
+      <legend data-i18n="optLegendMap">Karte</legend>
+      <label>
+        <span data-i18n="optMapProvider">Kartenanbieter:</span>
+        <select name="mapProvider">
+          <option value="google" data-i18n="optGoogle">Google Maps</option>
+          <option value="osm" data-i18n="optOsm">OpenStreetMap</option>
+          <option value="apple" data-i18n="optApple">Apple Maps</option>
+        </select>
+      </label>
+    </fieldset>
 
-      <fieldset>
-        <legend data-i18n="optLegendLanguage">Sprache</legend>
-        <label>
-          <span data-i18n="optLanguage">Sprache:</span>
-          <select name="localeOverride">
-            <option value="auto" data-i18n="langAuto">
-              Automatisch (Browser)
-            </option>
-            <option value="de" data-i18n="langDe">Deutsch</option>
-            <option value="en" data-i18n="langEn">Englisch</option>
-            <option value="es" data-i18n="langEs">Spanisch</option>
-            <option value="it" data-i18n="langIt">Italienisch</option>
-          </select>
-        </label>
-      </fieldset>
+    <fieldset>
+      <legend data-i18n="optLegendOverlay">Overlay</legend>
+      <label>
+        <span data-i18n="optPosition">Position:</span>
+        <select name="position">
+          <option value="bottom-right" data-i18n="posBR">Unten rechts</option>
+          <option value="bottom-left" data-i18n="posBL">Unten links</option>
+          <option value="top-right" data-i18n="posTR">Oben rechts</option>
+          <option value="top-left" data-i18n="posTL">Oben links</option>
+        </select>
+      </label>
+      <label>
+        <span data-i18n="optTheme">Theme:</span>
+        <select name="theme">
+          <option value="dark" data-i18n="themeDark">Dunkel</option>
+          <option value="light" data-i18n="themeLight">Hell</option>
+        </select>
+      </label>
+      <label class="row">
+        <input type="checkbox" name="autoCopy">
+        <span data-i18n="optAutoCopy">Adresse nach Erkennung automatisch in die Zwischenablage kopieren</span>
+      </label>
+    </fieldset>
 
-      <div class="row">
-        <button type="submit" id="saveBtn" data-i18n="optSave">
-          Speichern
-        </button>
-        <span id="status" class="muted"></span>
-      </div>
-    </form>
+    <fieldset>
+      <legend data-i18n="optLegendLanguage">Sprache</legend>
+      <label>
+        <span data-i18n="optLanguage">Sprache:</span>
+        <select name="localeOverride">
+          <option value="auto" data-i18n="langAuto">Automatisch (Browser)</option>
+          <option value="de" data-i18n="langDe">Deutsch</option>
+          <option value="en" data-i18n="langEn">Englisch</option>
+          <option value="es" data-i18n="langEs">Spanisch</option>
+          <option value="it" data-i18n="langIt">Italienisch</option>
+        </select>
+      </label>
+    </fieldset>
 
-    <script src="options.js"></script>
-  </body>
+    <div class="row">
+      <button type="submit" id="saveBtn" data-i18n="optSave">Speichern</button>
+      <span id="status" class="muted"></span>
+    </div>
+  </form>
+
+  <!-- Footer with repo link -->
+  <footer class="love_section" aria-label="Project attribution">
+    <span data-i18n="loveMade">Made with</span>
+    <span class="heart" aria-hidden="true">❤️</span>
+    <span data-i18n="loveIn">in Germany</span>
+    <span>—</span>
+    <a href="https://github.com/kidzki/immo24-address-decoder" target="_blank" rel="noopener" data-i18n="loveRepo">GitHub Repository</a>
+  </footer>
+
+  <script src="options.js"></script>
+</body>
 </html>
