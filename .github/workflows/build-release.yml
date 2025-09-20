@@ -86,3 +86,17 @@ jobs:
             dist/immo24-chromium.zip
             dist/immo24-firefox.zip
           generate_release_notes: true
+
+                - name: Update manifest version badge (main only)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          VER=$(jq -r .version manifest.json)
+          mkdir -p badges
+          cat > badges/manifest.json <<EOF
+          { "schemaVersion": 1, "label": "manifest", "message": "${VER}", "color": "blue" }
+          EOF
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add badges/manifest.json
+          git commit -m "chore(badge): update manifest version to ${VER}" || echo "no changes"
+          git push origin "${{ github.ref_name }}"
