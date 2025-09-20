@@ -1,4 +1,4 @@
-name: Build Extensions
+name: Build Extensions (Bun)
 
 on:
   push:
@@ -19,19 +19,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: '20'
-          cache: 'npm'
+          bun-version: '1.1.x'   # oder 'latest'
 
-      - name: Install deps
-        run: npm ci
+      - name: Install deps (bun)
+        run: bun install --frozen-lockfile
 
       - name: Build (minify + copy + zip)
-        run: npm run build:all
+        run: bun run build:all
 
-      - name: Upload artifacts (CI)
+      - name: Upload CI artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist-zips
@@ -39,16 +38,15 @@ jobs:
             dist/immo24-chromium.zip
             dist/immo24-firefox.zip
 
-      # ---- Put packages into repo under packages/<version>/ when building a tag ----
-      - name: Determine version from tag or manifest
+      - name: Determine version from tag or package.json
         id: ver
         run: |
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             TAG="${GITHUB_REF#refs/tags/}"
             echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
           else
-            MANIFEST_VERSION=$(node -e "console.log(require('./package.json').version || '0.0.0')")
-            echo "version=${MANIFEST_VERSION}" >> "$GITHUB_OUTPUT"
+            VER=$(jq -r .version package.json)
+            echo "version=${VER}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Commit packages into repo (on tag)

@@ -8,7 +8,7 @@
     "build": "node scripts/build.mjs",
     "zip:chromium": "cd dist/chromium && zip -r ../immo24-chromium.zip .",
     "zip:firefox": "cd dist/firefox && zip -r ../immo24-firefox.zip .",
-    "build:all": "npm run clean && npm run build && npm run zip:chromium && npm run zip:firefox"
+    "build:all": "bun run clean && bun run build && bun run zip:chromium && bun run zip:firefox"
   },
   "devDependencies": {
     "cpy": "^11.1.0",
