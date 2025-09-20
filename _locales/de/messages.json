@@ -1,6 +1,8 @@
 {
   "extName": { "message": "IS24 Address Decoder" },
-  "extDesc": { "message": "Dekodiert Exposé-Adressen (obj_telekomInternetUrlAddition) und zeigt sie als Overlay an." },
+  "extDesc": {
+    "message": "Dekodiert Exposé-Adressen (obj_telekomInternetUrlAddition) und zeigt sie als Overlay an."
+  },
   "cmdToggle": { "message": "Overlay ein-/ausblenden" },
 
   "uiTitle": { "message": "Adresse (IS24 Decoder)" },
@@ -17,7 +19,9 @@
   "optMapProvider": { "message": "Kartenanbieter:" },
   "optPosition": { "message": "Position:" },
   "optTheme": { "message": "Theme:" },
-  "optAutoCopy": { "message": "Adresse nach Erkennung automatisch in die Zwischenablage kopieren" },
+  "optAutoCopy": {
+    "message": "Adresse nach Erkennung automatisch in die Zwischenablage kopieren"
+  },
   "optSave": { "message": "Speichern" },
   "optSaved": { "message": "Gespeichert ✓" },
 
@@ -39,5 +43,9 @@
   "langDe": { "message": "Deutsch" },
   "langEn": { "message": "Englisch" },
   "langEs": { "message": "Spanisch" },
-  "langIt": { "message": "Italienisch" }
+  "langIt": { "message": "Italienisch" },
+
+  "loveMade": { "message": "Made with" },
+  "loveIn": { "message": "in Germany" },
+  "loveRepo": { "message": "GitHub Repository" }
 }

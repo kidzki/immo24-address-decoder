@@ -1,6 +1,8 @@
 {
   "extName": { "message": "IS24 Address Decoder" },
-  "extDesc": { "message": "Decodifica gli indirizzi nascosti dell'annuncio (obj_telekomInternetUrlAddition) e li mostra in sovrimpressione." },
+  "extDesc": {
+    "message": "Decodifica gli indirizzi nascosti dell'annuncio (obj_telekomInternetUrlAddition) e li mostra in sovrimpressione."
+  },
   "cmdToggle": { "message": "Mostra/nascondi overlay" },
 
   "uiTitle": { "message": "Indirizzo (IS24 Decoder)" },
@@ -17,7 +19,9 @@
   "optMapProvider": { "message": "Provider mappa:" },
   "optPosition": { "message": "Posizione:" },
   "optTheme": { "message": "Tema:" },
-  "optAutoCopy": { "message": "Copia automaticamente l'indirizzo rilevato negli appunti" },
+  "optAutoCopy": {
+    "message": "Copia automaticamente l'indirizzo rilevato negli appunti"
+  },
   "optSave": { "message": "Salva" },
   "optSaved": { "message": "Salvato ✓" },
 
@@ -39,5 +43,9 @@
   "langDe": { "message": "Tedesco" },
   "langEn": { "message": "Inglese" },
   "langEs": { "message": "Spagnolo" },
-  "langIt": { "message": "Italiano" }
+  "langIt": { "message": "Italiano" },
+
+  "loveMade": { "message": "Fatto con" },
+  "loveIn": { "message": "in Germania" },
+  "loveRepo": { "message": "Repository GitHub" }
 }

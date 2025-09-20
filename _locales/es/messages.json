@@ -31,5 +31,9 @@
   "posTL": { "message": "Arriba izquierda" },
 
   "themeDark": { "message": "Oscuro" },
-  "themeLight": { "message": "Claro" }
+  "themeLight": { "message": "Claro" },
+
+  "loveMade": { "message": "Hecho con" },
+  "loveIn":   { "message": "en Alemania" },
+  "loveRepo": { "message": "Repositorio en GitHub" }
 }
