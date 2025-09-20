@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <title data-i18n="optTitle">IS24 Address Decoder – Optionen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      /* deine Styles unverändert */
+    </style>
+  </head>
+  <body>
+    <h1 data-i18n="optTitle">IS24 Address Decoder – Optionen</h1>
+
+    <form id="form">
+      <fieldset>
+        <legend data-i18n="optLegendMap">Karte</legend>
+        <label>
+          <span data-i18n="optMapProvider">Kartenanbieter:</span>
+          <select name="mapProvider">
+            <option value="google" data-i18n="optGoogle">Google Maps</option>
+            <option value="osm" data-i18n="optOsm">OpenStreetMap</option>
+            <option value="apple" data-i18n="optApple">Apple Maps</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend data-i18n="optLegendOverlay">Overlay</legend>
+        <label>
+          <span data-i18n="optPosition">Position:</span>
+          <select name="position">
+            <option value="bottom-right" data-i18n="posBR">Unten rechts</option>
+            <option value="bottom-left" data-i18n="posBL">Unten links</option>
+            <option value="top-right" data-i18n="posTR">Oben rechts</option>
+            <option value="top-left" data-i18n="posTL">Oben links</option>
+          </select>
+        </label>
+        <label>
+          <span data-i18n="optTheme">Theme:</span>
+          <select name="theme">
+            <option value="dark" data-i18n="themeDark">Dunkel</option>
+            <option value="light" data-i18n="themeLight">Hell</option>
+          </select>
+        </label>
+        <label class="row">
+          <input type="checkbox" name="autoCopy" />
+          <span data-i18n="optAutoCopy"
+            >Adresse nach Erkennung automatisch …</span
+          >
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend data-i18n="optLegendLanguage">Sprache</legend>
+        <label>
+          <span data-i18n="optLanguage">Sprache:</span>
+          <select name="localeOverride">
+            <option value="auto" data-i18n="langAuto">
+              Automatisch (Browser)
+            </option>
+            <option value="de" data-i18n="langDe">Deutsch</option>
+            <option value="en" data-i18n="langEn">Englisch</option>
+            <option value="es" data-i18n="langEs">Spanisch</option>
+            <option value="it" data-i18n="langIt">Italienisch</option>
+          </select>
+        </label>
+      </fieldset>
+
+      <div class="row">
+        <button type="submit" id="saveBtn" data-i18n="optSave">
+          Speichern
+        </button>
+        <span id="status" class="muted"></span>
+      </div>
+    </form>
+
+    <script src="options.js"></script>
+  </body>
+</html>

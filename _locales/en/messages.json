@@ -1,0 +1,43 @@
+{
+  "extName": { "message": "IS24 Address Decoder" },
+  "extDesc": { "message": "Descodifica direcciones ocultas del anuncio (obj_telekomInternetUrlAddition) y las muestra en una superposición." },
+  "cmdToggle": { "message": "Mostrar/ocultar superposición" },
+
+  "uiTitle": { "message": "Dirección (IS24 Decoder)" },
+  "uiCopy": { "message": "Copiar" },
+  "uiCopied": { "message": "Copiado ✓" },
+  "uiCopyFail": { "message": "Error" },
+  "uiOpenMap": { "message": "Abrir mapa" },
+  "uiClose": { "message": "Cerrar" },
+  "uiNoAddress": { "message": "No se encontró dirección" },
+
+  "optTitle": { "message": "IS24 Address Decoder – Opciones" },
+  "optLegendMap": { "message": "Mapa" },
+  "optLegendOverlay": { "message": "Superposición" },
+  "optMapProvider": { "message": "Proveedor de mapas:" },
+  "optPosition": { "message": "Posición:" },
+  "optTheme": { "message": "Tema:" },
+  "optAutoCopy": { "message": "Copiar automáticamente la dirección detectada al portapapeles" },
+  "optSave": { "message": "Guardar" },
+  "optSaved": { "message": "Guardado ✓" },
+
+  "optGoogle": { "message": "Google Maps" },
+  "optOsm": { "message": "OpenStreetMap" },
+  "optApple": { "message": "Apple Maps" },
+
+  "posBR": { "message": "Abajo a la derecha" },
+  "posBL": { "message": "Abajo a la izquierda" },
+  "posTR": { "message": "Arriba a la derecha" },
+  "posTL": { "message": "Arriba a la izquierda" },
+
+  "themeDark": { "message": "Oscuro" },
+  "themeLight": { "message": "Claro" },
+
+  "optLegendLanguage": { "message": "Idioma" },
+  "optLanguage": { "message": "Idioma:" },
+  "langAuto": { "message": "Automático (navegador)" },
+  "langDe": { "message": "Alemán" },
+  "langEn": { "message": "Inglés" },
+  "langEs": { "message": "Español" },
+  "langIt": { "message": "Italiano" }
+}

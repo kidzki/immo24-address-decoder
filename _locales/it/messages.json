@@ -1,0 +1,43 @@
+{
+  "extName": { "message": "IS24 Address Decoder" },
+  "extDesc": { "message": "Decodifica gli indirizzi nascosti dell'annuncio (obj_telekomInternetUrlAddition) e li mostra in sovrimpressione." },
+  "cmdToggle": { "message": "Mostra/nascondi overlay" },
+
+  "uiTitle": { "message": "Indirizzo (IS24 Decoder)" },
+  "uiCopy": { "message": "Copia" },
+  "uiCopied": { "message": "Copiato ✓" },
+  "uiCopyFail": { "message": "Errore" },
+  "uiOpenMap": { "message": "Apri mappa" },
+  "uiClose": { "message": "Chiudi" },
+  "uiNoAddress": { "message": "Nessun indirizzo trovato" },
+
+  "optTitle": { "message": "IS24 Address Decoder – Opzioni" },
+  "optLegendMap": { "message": "Mappa" },
+  "optLegendOverlay": { "message": "Overlay" },
+  "optMapProvider": { "message": "Provider mappa:" },
+  "optPosition": { "message": "Posizione:" },
+  "optTheme": { "message": "Tema:" },
+  "optAutoCopy": { "message": "Copia automaticamente l'indirizzo rilevato negli appunti" },
+  "optSave": { "message": "Salva" },
+  "optSaved": { "message": "Salvato ✓" },
+
+  "optGoogle": { "message": "Google Maps" },
+  "optOsm": { "message": "OpenStreetMap" },
+  "optApple": { "message": "Apple Maps" },
+
+  "posBR": { "message": "In basso a destra" },
+  "posBL": { "message": "In basso a sinistra" },
+  "posTR": { "message": "In alto a destra" },
+  "posTL": { "message": "In alto a sinistra" },
+
+  "themeDark": { "message": "Scuro" },
+  "themeLight": { "message": "Chiaro" },
+
+  "optLegendLanguage": { "message": "Lingua" },
+  "optLanguage": { "message": "Lingua:" },
+  "langAuto": { "message": "Automatico (browser)" },
+  "langDe": { "message": "Tedesco" },
+  "langEn": { "message": "Inglese" },
+  "langEs": { "message": "Spagnolo" },
+  "langIt": { "message": "Italiano" }
+}

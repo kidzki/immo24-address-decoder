@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extName__",
+  "version": "1.4.0",
+  "description": "__MSG_extDesc__",
+  "default_locale": "de",
+  "permissions": ["clipboardWrite", "storage"],
+  "host_permissions": ["https://www.immobilienscout24.de/*"],
+  "background": { "service_worker": "bg.js" },
+  "commands": {
+    "toggle-overlay": {
+      "description": "__MSG_cmdToggle__",
+      "suggested_key": { "default": "Ctrl+B", "mac": "Command+B" }
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.immobilienscout24.de/expose/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "browser_specific_settings": {
+    "gecko": { "id": "is24-address-decoder@example.com", "strict_min_version": "109.0" }
+  }
+}
