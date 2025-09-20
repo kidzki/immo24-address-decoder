@@ -1,7 +1,5 @@
 # Immo24 Address Decoder
 
-# Immo24 Address Decoder
-
 [![Build](https://img.shields.io/github/actions/workflow/status/kidzki/immo24-address-decoder/build.yml?branch=main)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build-release.yml)
 [![Release](https://img.shields.io/github/v/release/kidzki/immo24-address-decoder?display_name=tag&sort=semver)](https://github.com/kidzki/immo24-address-decoder/releases)
 [![Uses Bun](https://img.shields.io/badge/Uses-Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
