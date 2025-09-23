@@ -1,4 +1,4 @@
-# Immo24 Address Decoder
+# Immo24 Address Finder
 
 [![Build](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build-release.yml/badge.svg?branch=main)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build-release.yml)
 [![Release](https://img.shields.io/github/v/release/kidzki/immo24-address-decoder?display_name=tag&sort=semver)](https://github.com/kidzki/immo24-address-decoder/releases)
