@@ -1,3 +1,5 @@
+// content.js — IS24 Address Decoder (v1.4.x)
+
 (async function () {
   // ---------- Cross-browser API --------------------------------------------
   const API = (typeof browser !== 'undefined') ? browser : chrome;
@@ -21,60 +23,112 @@
     });
   }
 
-  // Lädt ein messages.json aus _locales/<locale>/ (für manuellen Override)
   async function loadLocaleBundle(locale) {
     try {
       const url = API.runtime.getURL(`_locales/${locale}/messages.json`);
       const res = await fetch(url);
       if (!res.ok) throw new Error("fetch failed");
       const data = await res.json();
-      // messages.json hat { key: { message: "..." } }
       const flat = {};
-      for (const [k, v] of Object.entries(data)) flat[k] = v && v.message || "";
+      for (const [k, v] of Object.entries(data)) flat[k] = (v && v.message) || "";
       return flat;
     } catch {
       return null;
     }
   }
 
-  // Erst Settings laden, dann ggf. Übersetzungen
   const settings = await getSettings();
 
+  // i18n: Browser-API oder Override-Bundle
   let t = (k) => (API?.i18n?.getMessage ? API.i18n.getMessage(k) : k);
   if (settings.localeOverride && settings.localeOverride !== "auto") {
     const bundle = await loadLocaleBundle(settings.localeOverride);
-    if (bundle) {
-      t = (k) => (k in bundle ? bundle[k] : k);
-    }
+    if (bundle) t = (k) => (k in bundle ? bundle[k] : k);
   }
 
-  // ---------- Decoding helpers ---------------------------------------------
-  function atobUtf8(b64) {
-    const bin = atob(b64);
-    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-    try {
-      return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
-    } catch {
-      return decodeURIComponent(Array.from(bytes).map(b => "%" + b.toString(16).padStart(2, "0")).join(""));
-    }
+  // ---------- Robust decoding helpers --------------------------------------
+
+  // Base64 URL-safe normalisieren
+  function b64Normalize(b64) {
+    return (b64 || "").replace(/-/g, '+').replace(/_/g, '/').replace(/\s+/g, '');
   }
 
+  // Base64 -> Uint8Array
+  function b64ToBytes(b64) {
+    const norm = b64Normalize(b64);
+    const pad = norm.length % 4 === 0 ? '' : '='.repeat(4 - (norm.length % 4));
+    const bin = atob(norm + pad);
+    return Uint8Array.from(bin, c => c.charCodeAt(0));
+  }
+
+  // Bytes -> String (UTF-8 → Win-1252 → ISO-8859-1 → Fallback)
+  function bytesToStringSmart(bytes) {
+    try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); } catch {}
+    try { return new TextDecoder('windows-1252', { fatal: true }).decode(bytes); } catch {}
+    try { return new TextDecoder('iso-8859-1', { fatal: true }).decode(bytes); } catch {}
+
+    // harte Fallbacks
+    let s = '';
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i] & 0xff);
+    try { return decodeURIComponent(escape(s)); } catch { return s; }
+  }
+
+  // Doppelt-UTF8-Heuristik (Ã¶ → ö)
+  function fixDoubleUtf8(s) {
+    if (!s) return s;
+    if (!/[Ã][\x80-\xBF]/.test(s)) return s;
+    const bytes = Uint8Array.from([...s].map(ch => ch.charCodeAt(0) & 0xff));
+    try { return new TextDecoder('utf-8', { fatal: true }).decode(bytes); } catch { return s; }
+  }
+
+  function sanitizeText(s) {
+    if (!s) return s;
+    const fixed = fixDoubleUtf8(s);
+    return fixed.replace(/\uFFFD/g, ''); // entferne Ersatzzeichen �
+  }
+
+  // Hauptdecoder für den IS24-Payload
   function decodeTelekomAddition(encoded) {
     if (!encoded) return null;
+
+    // 0) URL-Decoding (mit + → %20 Fix)
+    let urlDecoded;
     try {
-      const urlDecoded = decodeURIComponent(encoded);
-      let jsonString;
-      try { jsonString = atobUtf8(urlDecoded); } catch { jsonString = urlDecoded; }
-      return JSON.parse(jsonString);
-    } catch { return null; }
+      urlDecoded = decodeURIComponent(String(encoded).replace(/\+/g, '%20'));
+    } catch {
+      urlDecoded = encoded;
+    }
+
+    // 1) Base64-Weg: Base64 → Bytes → String → JSON
+    let jsonCandidate = null;
+    try {
+      const bytes = b64ToBytes(urlDecoded);
+      jsonCandidate = bytesToStringSmart(bytes);
+    } catch {
+      // kein Base64: probieren wir weiter unten JSON direkt
+    }
+
+    if (jsonCandidate) {
+      jsonCandidate = fixDoubleUtf8(jsonCandidate);
+      try { return JSON.parse(jsonCandidate); } catch {}
+      try { return JSON.parse(decodeURIComponent(jsonCandidate)); } catch {}
+    }
+
+    // 2) ggf. war urlDecoded bereits ein JSON-String
+    try { return JSON.parse(urlDecoded); } catch {}
+    try { return JSON.parse(decodeURIComponent(urlDecoded)); } catch {}
+
+    return null;
   }
 
+  // Extrahiert den codierten String aus Scripts/HTML
   function extractEncodedFromScripts() {
     const re = /"obj_telekomInternetUrlAddition"\s*:\s*"([^"]+)"/g;
+
     for (const s of document.scripts) {
-      const t = s.textContent || "";
+      const txt = s.textContent || "";
       let m;
-      while ((m = re.exec(t)) !== null) {
+      while ((m = re.exec(txt)) !== null) {
         if (m[1]) return m[1];
       }
     }
@@ -164,11 +218,17 @@
     line.style.margin = "6px 0 10px";
     line.style.whiteSpace = "pre-wrap";
 
-    const { strasse, hausnummer, plz, ort, ortsteil } = address;
+    const strasse = sanitizeText(address.strasse);
+    const hausnummer = sanitizeText(address.hausnummer);
+    const plz = sanitizeText(address.plz);
+    const ort = sanitizeText(address.ort);
+    const ortsteil = sanitizeText(address.ortsteil);
+
     const addrLine =
       [strasse, hausnummer].filter(Boolean).join(" ") +
-      (plz || ort ? `\n${[plz, ort].filter(Boolean).join(" ")}` : "") +
+      ((plz || ort) ? `\n${[plz, ort].filter(Boolean).join(" ")}` : "") +
       (ortsteil ? `\n(${ortsteil})` : "");
+
     line.textContent = addrLine || t("uiNoAddress");
 
     const actions = document.createElement("div");
@@ -276,7 +336,7 @@
   });
   mo.observe(document.documentElement, { childList: true, subtree: true });
 
-  // Shortcut (Command) vom Service Worker
+  // Shortcut (Command) vom Service Worker (Ctrl/⌘+B)
   if (API.runtime && API.runtime.onMessage) {
     API.runtime.onMessage.addListener((msg) => {
       if (msg && msg.type === "IS24_TOGGLE_OVERLAY") {
@@ -286,22 +346,29 @@
     });
   }
 
-  // Live-Änderungen der Optionen anwenden
+  // Live-Änderungen der Optionen anwenden (inkl. Sprach-Override)
   if (API.storage && API.storage.onChanged) {
     API.storage.onChanged.addListener((changes, area) => {
       if (area !== "sync") return;
+
+      // apply changes to settings
       Object.assign(settings, ...Object.keys(changes).map(k => ({ [k]: changes[k].newValue })));
 
-      // Wenn sich die Sprache ändert und nicht "auto" ist, bundle nachladen
-      if ("localeOverride" in changes && settings.localeOverride !== "auto") {
-        loadLocaleBundle(settings.localeOverride).then(bundle => {
-          if (bundle) {
-            t = (k) => (k in bundle ? bundle[k] : k);
-            if (overlayEl) { overlayEl.remove(); overlayEl = null; }
-            if (overlayState !== "dismissed") runDecoderOnce();
-          }
-        });
-        return;
+      // Sprache geändert?
+      if ("localeOverride" in changes) {
+        if (settings.localeOverride && settings.localeOverride !== "auto") {
+          loadLocaleBundle(settings.localeOverride).then(bundle => {
+            if (bundle) {
+              t = (k) => (k in bundle ? bundle[k] : k);
+              if (overlayEl) { overlayEl.remove(); overlayEl = null; }
+              if (overlayState !== "dismissed") runDecoderOnce();
+            }
+          });
+          return;
+        } else {
+          // zurück zu Browser-i18n
+          t = (k) => (API?.i18n?.getMessage ? API.i18n.getMessage(k) : k);
+        }
       }
 
       // Overlay neu aufbauen mit neuen Einstellungen

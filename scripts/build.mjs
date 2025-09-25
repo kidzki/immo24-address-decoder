@@ -57,9 +57,6 @@ function ensureFirefoxGecko(manifest){
     strict_min_version: gecko.strict_min_version || '109.0',
     data_collection_permissions: {
       required: ["none"],
-      collects_browsing_data: false,
-      collects_search_terms: false,
-      collects_private_browsing_data: false
     }
   };
 }
