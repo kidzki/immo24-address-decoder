@@ -1,11 +1,11 @@
 {
-  "extName": { "message": "IS24 Address Decoder" },
+  "extName": { "message": "IS24 Address Finder" },
   "extDesc": {
     "message": "Decodifica gli indirizzi nascosti dell'annuncio (obj_telekomInternetUrlAddition) e li mostra in sovrimpressione."
   },
   "cmdToggle": { "message": "Mostra/nascondi overlay" },
 
-  "uiTitle": { "message": "Indirizzo (IS24 Decoder)" },
+  "uiTitle": { "message": "Indirizzo (IS24)" },
   "uiCopy": { "message": "Copia" },
   "uiCopied": { "message": "Copiato ✓" },
   "uiCopyFail": { "message": "Errore" },
@@ -13,7 +13,7 @@
   "uiClose": { "message": "Chiudi" },
   "uiNoAddress": { "message": "Nessun indirizzo trovato" },
 
-  "optTitle": { "message": "IS24 Address Decoder – Opzioni" },
+  "optTitle": { "message": "IS24 Address Finder – Opzioni" },
   "optLegendMap": { "message": "Mappa" },
   "optLegendOverlay": { "message": "Overlay" },
   "optMapProvider": { "message": "Provider mappa:" },

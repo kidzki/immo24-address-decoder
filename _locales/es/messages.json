@@ -1,9 +1,9 @@
 {
-  "extName": { "message": "IS24 Address Decoder" },
+  "extName": { "message": "IS24 Address Finder" },
   "extDesc": { "message": "Descodifica direcciones ocultas del anuncio y las muestra en una superposición." },
   "cmdToggle": { "message": "Mostrar/ocultar superposición" },
 
-  "uiTitle": { "message": "Dirección (IS24 Decoder)" },
+  "uiTitle": { "message": "Dirección (IS24)" },
   "uiCopy": { "message": "Copiar" },
   "uiCopied": { "message": "Copiado ✓" },
   "uiCopyFail": { "message": "Error" },
@@ -11,7 +11,7 @@
   "uiClose": { "message": "Cerrar" },
   "uiNoAddress": { "message": "No se encontró dirección" },
 
-  "optTitle": { "message": "IS24 Address Decoder – Opciones" },
+  "optTitle": { "message": "IS24 Address Finder – Opciones" },
   "optLegendMap": { "message": "Mapa" },
   "optLegendOverlay": { "message": "Superposición" },
   "optMapProvider": { "message": "Proveedor de mapas:" },
