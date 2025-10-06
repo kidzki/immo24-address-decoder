@@ -1,11 +1,14 @@
 # Immo24 Address Finder
 
-[![Build](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build-release.yml/badge.svg?branch=main)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/build-release.yml)
+[![CI](https://github.com/kidzki/immo24-address-decoder/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/ci.yml)
+[![Tests](https://github.com/kidzki/immo24-address-decoder/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/kidzki/immo24-address-decoder/actions/workflows/test.yml)
 [![Release](https://img.shields.io/github/v/release/kidzki/immo24-address-decoder?display_name=tag&sort=semver)](https://github.com/kidzki/immo24-address-decoder/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 [![Uses Bun](https://img.shields.io/badge/Uses-Bun-000000?logo=bun&logoColor=white)](https://bun.sh)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-4285F4?logo=google-chrome&logoColor=white)](https://chrome.google.com/webstore/detail/IMMO24_EXTENSION_ID)
 [![Firefox Add-on](https://img.shields.io/badge/Firefox-Add--on-FF7139?logo=firefox-browser&logoColor=white)](https://addons.mozilla.org/firefox/addon/IMMO24_ADDON_SLUG)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 
 
@@ -25,6 +28,7 @@ A simple browser extension for Chrome/Chromium and Firefox that decodes hidden a
 ### Requirements
 - [Bun](https://bun.sh/) ≥ v2 latest  
 - `zip` CLI installed (for packaging)
+- TypeScript 5.9+
 
 ### Install dependencies
 ```bash
@@ -33,6 +37,13 @@ bun install
 
 ### Build
 ```bash
+# Type check
+bun run typecheck
+
+# Build extension
+bun run build
+
+# Full build with type check and packaging
 bun run build:all
 ```
 
@@ -42,9 +53,29 @@ Outputs:
 - `dist/immo24-chromium.zip` – packaged Chromium extension
 - `dist/immo24-firefox.zip` – packaged Firefox extension
 
+**Note:** The extension version in `manifest.json` is automatically synced from `package.json` during build.
+
 ### Load unpacked
 - **Chrome/Edge/Brave**: open `chrome://extensions`, enable developer mode, *Load unpacked*, select `dist/chromium/`.
 - **Firefox**: open `about:debugging#/runtime/this-firefox`, *Load Temporary Add-on*, select `dist/firefox/manifest.json`.
+
+## 🧪 Testing
+
+```bash
+# Run unit tests
+bun run test
+
+# Run E2E tests
+bun run test:e2e
+
+# Run tests with UI
+bun run test:ui
+
+# Generate coverage report
+bun run test:coverage
+```
+
+See [Testing Documentation](docs/TESTING.md) for detailed information.
 
 ## 📦 Release Process
 
@@ -84,6 +115,15 @@ Outputs:
 ├── manifest.json     # base manifest (MV3 for Chromium)
 ├── scripts/build.mjs # build script
 ```
+
+## 📚 Documentation
+
+For detailed documentation, see the [docs/](docs/) directory:
+
+- **[Architecture](docs/ARCHITECTURE.md)** - System architecture and design patterns
+- **[TypeScript Migration](docs/MIGRATION.md)** - Migration guide and setup
+- **[Clean Code Review](docs/CLEAN_CODE_REVIEW.md)** - Code quality improvements
+- **[Privacy Policy](docs/PRIVACY_POLICY.md)** - Extension privacy policy
 
 ## ❤️ Contributing
 
