@@ -4,36 +4,19 @@ This directory contains all technical documentation for the immo24-address-decod
 
 ## 📐 Architecture & Design
 
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture overview and component interaction
-- **[SOURCE_CODE.md](SOURCE_CODE.md)** - Source code structure and module documentation
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture overview, design patterns, and component interaction
 
 ## 🔄 Migration & Development
 
-- **[MIGRATION.md](MIGRATION.md)** - TypeScript migration guide and steps
-- **[TYPESCRIPT.md](TYPESCRIPT.md)** - TypeScript setup, configuration, and tooling
-
-## 🧪 Testing
-
-- **[TESTING.md](TESTING.md)** - Comprehensive testing documentation
-  - Unit Tests (Vitest)
-  - E2E Tests (Playwright)
-- **[LANGUAGE_TESTING.md](LANGUAGE_TESTING.md)** - Language override testing guide
-
-## 🚀 CI/CD & Deployment
-
-- **[CI_CD.md](CI_CD.md)** - GitHub Actions workflows and deployment
-  - Automated testing
-  - Build pipeline
-  - Coverage reporting
-
-## 🗑️ Cleanup & Changes
-
-- **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** - Storybook removal summary
+- **[MIGRATION.md](MIGRATION.md)** - Complete TypeScript migration guide with steps and changes (v0.1.6 → v0.2.0)
 
 ## 📋 Project Information
 
 - **[PRIVACY_POLICY.md](PRIVACY_POLICY.md)** - Privacy policy for the browser extension
 
-## 📚 Main Documentation
+## 📚 Additional Resources
 
-For general project information, installation, and usage instructions, see the [main README](../README.md) in the root directory.
+For general project information, installation, usage instructions, testing, and CI/CD workflows, see:
+- [Main README](../README.md) - Project overview and quick start
+- [GitHub Actions Workflows](../.github/workflows/README.md) - CI/CD documentation
+- [CHANGELOG](../CHANGELOG.md) - Version history and release notes
