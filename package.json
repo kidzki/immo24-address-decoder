@@ -1,6 +1,6 @@
 {
   "name": "immo24-address-decoder",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "private": false,
   "type": "module",
   "scripts": {
