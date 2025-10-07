@@ -1,6 +1,6 @@
 {
   "extName": { "message": "IS24 Address Finder" },
-  "extDesc": { "message": "Descodifica direcciones ocultas del anuncio y las muestra en una superposición." },
+  "extDesc": { "message": "Muestra las direcciones normalmente ocultas de anuncios inmobiliarios en Immobilienscout24." },
   "cmdToggle": { "message": "Mostrar/ocultar superposición" },
 
   "uiTitle": { "message": "Dirección (IS24)" },
@@ -25,17 +25,26 @@
   "optOsm": { "message": "OpenStreetMap" },
   "optApple": { "message": "Apple Maps" },
 
-  "posBR": { "message": "Abajo derecha" },
-  "posBL": { "message": "Abajo izquierda" },
-  "posTR": { "message": "Arriba derecha" },
-  "posTL": { "message": "Arriba izquierda" },
+  "posBR": { "message": "Abajo a la derecha" },
+  "posBL": { "message": "Abajo a la izquierda" },
+  "posTR": { "message": "Arriba a la derecha" },
+  "posTL": { "message": "Arriba a la izquierda" },
 
   "themeDark": { "message": "Oscuro" },
   "themeLight": { "message": "Claro" },
 
+  "optLegendLanguage": { "message": "Idioma" },
+  "optLanguage": { "message": "Idioma:" },
+  "langAuto": { "message": "Automático (navegador)" },
+  "langDe": { "message": "Alemán" },
+  "langEn": { "message": "Inglés" },
+  "langEs": { "message": "Español" },
+  "langIt": { "message": "Italiano" },
+
   "loveMade": { "message": "Hecho con" },
-  "loveIn":   { "message": "en Alemania" },
+  "loveIn": { "message": "en Alemania" },
   "loveRepo": { "message": "Repositorio en GitHub" },
 
   "optVersion": { "message": "Versión:" }
 }
+

@@ -1,7 +1,7 @@
 {
   "extName": { "message": "IS24 Address Finder" },
   "extDesc": {
-    "message": "Decodifica gli indirizzi nascosti dell'annuncio (obj_telekomInternetUrlAddition) e li mostra in sovrimpressione."
+    "message": "Visualizza gli indirizzi normalmente nascosti degli annunci immobiliari su Immobilienscout24."
   },
   "cmdToggle": { "message": "Mostra/nascondi overlay" },
 
