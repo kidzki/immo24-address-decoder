@@ -12,5 +12,8 @@ coverage/
 playwright-report/
 test-results/
 
+# macOS
+.DS_Store
+
 # allow packages in repo
 !packages/
