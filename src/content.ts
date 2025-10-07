@@ -29,14 +29,18 @@ const FEEDBACK_MESSAGE_DURATION = 1500;
 
   async function loadLocaleBundle(locale: string): Promise<Record<string, string> | null> {
     try {
-      const url = API.runtime.getURL(`_locales/${locale}/messages.json`);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('fetch failed');
-      const data = await res.json();
-      const flat: Record<string, string> = {};
-      for (const [k, v] of Object.entries<any>(data)) flat[k] = (v && v.message) || '';
-      return flat;
-    } catch {
+      const response = await API.runtime.sendMessage({ 
+        type: 'getLocaleData', 
+        locale: locale
+      });
+      
+      if (response && response.data) {
+        return response.data;
+      }
+      
+      return null;
+    } catch (e) {
+      console.error('[ImmoScout24 Decoder] Failed to load locale bundle:', e);
       return null;
     }
   }
@@ -375,11 +379,19 @@ const FEEDBACK_MESSAGE_DURATION = 1500;
       Object.assign(settings, ...Object.keys(changes).map(k => ({ [k]: (changes as any)[k].newValue })));
       
       if ('localeOverride' in changes) {
-        if (settings.localeOverride && settings.localeOverride !== 'auto') {
-          loadLocaleBundle(settings.localeOverride).then(bundle => {
-            if (!bundle) return;
+        const newLocale = settings.localeOverride;
+        
+        if (newLocale && newLocale !== 'auto') {
+          // Load custom locale
+          loadLocaleBundle(newLocale).then(bundle => {
+            if (!bundle) {
+              // Fallback to browser default
+              t = (k: string) => (API?.i18n?.getMessage ? API.i18n.getMessage(k) : k);
+            } else {
+              t = (k: string) => (k in bundle ? bundle[k] : k);
+            }
             
-            t = (k: string) => (k in bundle ? bundle[k] : k);
+            // Recreate overlay with new translations
             if (overlayEl) {
               overlayEl.remove();
               overlayEl = null;
@@ -388,12 +400,23 @@ const FEEDBACK_MESSAGE_DURATION = 1500;
               runDecoderOnce();
             }
           });
-          return;
+        } else {
+          // Switch back to browser default (auto)
+          t = (k: string) => (API?.i18n?.getMessage ? API.i18n.getMessage(k) : k);
+          
+          // Recreate overlay with new translations
+          if (overlayEl) {
+            overlayEl.remove();
+            overlayEl = null;
+          }
+          if (overlayState !== 'dismissed') {
+            runDecoderOnce();
+          }
         }
-        
-        t = (k: string) => (API?.i18n?.getMessage ? API.i18n.getMessage(k) : k);
+        return;
       }
       
+      // Handle other settings changes (theme, position, etc.)
       if (overlayEl) {
         overlayEl.remove();
         overlayEl = null;
