@@ -1,14 +1,20 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [main, master, develop]
+    tags: ['v*']
   pull_request:
     branches: [main, master]
 
+# Permissions for release creation
+permissions:
+  contents: write
+
 jobs:
-  test:
-    name: Test Suite
+  # Step 1: Type checking and linting
+  typecheck:
+    name: Type Check
     runs-on: ubuntu-latest
     
     steps:
@@ -21,16 +27,68 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Run TypeScript type check
         run: bun run typecheck
+
+  # Step 2: Unit tests (runs after typecheck)
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: typecheck
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Run unit tests
         run: bunx vitest run
 
       - name: Generate test coverage
         run: bunx vitest run --coverage
+
+      - name: Upload coverage reports
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload coverage HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+  # Step 3: E2E tests (runs in parallel with unit tests after typecheck)
+  e2e-tests:
+    name: E2E Tests
+    runs-on: ubuntu-latest
+    needs: typecheck
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium firefox
@@ -41,14 +99,6 @@ jobs:
       - name: Run E2E tests
         run: bun run test:e2e
 
-      - name: Upload coverage reports
-        if: always()
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/lcov.info
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Upload Playwright test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -57,22 +107,17 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Upload coverage HTML report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 30
-
+  # Step 4: Build (only runs after ALL tests pass)
   build:
     name: Build Extension
     runs-on: ubuntu-latest
-    needs: test
+    needs: [unit-tests, e2e-tests]
     
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -80,17 +125,13 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
+
+      - name: Ensure zip is available
+        run: sudo apt-get update && sudo apt-get install -y zip
 
       - name: Build all targets
         run: bun run build:all
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: extension-builds
-          path: dist/*.zip
-          retention-days: 90
 
       - name: Check build output
         run: |
@@ -99,3 +140,37 @@ jobs:
           echo ""
           echo "✅ Chromium build size: $(du -h dist/immo24-chromium.zip | cut -f1)"
           echo "✅ Firefox build size: $(du -h dist/immo24-firefox.zip | cut -f1)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension-builds
+          path: dist/*.zip
+          retention-days: 90
+
+  # Step 5: Create GitHub Release (only for version tags, after successful build)
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: extension-builds
+          path: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/immo24-chromium.zip
+            dist/immo24-firefox.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
